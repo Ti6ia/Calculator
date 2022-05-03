@@ -25,21 +25,59 @@ const btn0 = document.getElementById("0");
 const btnEqual = document.getElementById("equal");
 const btnAddition = document.getElementById("addition");
 
+let operatorSelected = false;
 
-let valori = [];
-let val;
-const buttons = document.querySelectorAll(".button");
-
-buttons.forEach((button) => {
+/** stampa a schermo */
+const values = document.querySelectorAll(".value");
+values.forEach((button) => {
     button.addEventListener('click', (e) => {
-        console.log(e.target.innerText);
-        val = e.target.innerText;
-        if(e.target.innerText == "1" || e.target.innerText == "2" || e.target.innerText == "3" || e.target.innerText == "4" || e.target.innerText == "5" || e.target.innerText == "6" || e.target.innerText == "7" || e.target.innerText == "8" || e.target.innerText == "9" || e.target.innerText == "0"){
-            parseInt(val);
-            console.log(val);
-        }
-        bottomLine.innerText = e.target.innerText;
-        valori.push(e.target.innerText);
-        console.log(valori);
+        //console.log("button: " + operatorSelected);
+        if(bottomLine.innerText == 0 || operatorSelected == true){ bottomLine.innerText = ""; }
+        if(bottomLine.innerText == "."){ bottomLine.innerText = "0.";}
+        bottomLine.innerText = bottomLine.innerText + e.target.innerText;
+        operatorSelected = false;
     });
 });
+
+/** inserimento valori nell'array e stampa nella topLine*/
+let stringTopLine = "";
+let valori = [];
+const operators = document.querySelectorAll(".operator");
+operators.forEach((button) => {
+    button.addEventListener('click', (e) => {
+        //console.log("operetor: " + operatorSelected);
+        operatorSelected = true;
+        valori.push(bottomLine.innerText);
+        valori.push(e.target.innerText);
+        valori.forEach((x) => {
+            stringTopLine = stringTopLine + " " + x;
+        });
+        topLine.innerText = stringTopLine;
+        console.log(valori);
+        console.log(stringTopLine);
+        stringTopLine = "";
+    });
+});
+
+
+/** clear */
+btnClear.addEventListener('click', () => {
+    operatorSelected = false;
+    bottomLine.innerText = "";
+    topLine.innerText = "";
+    valori = [];
+});
+
+
+/** delete */
+btnDelete.addEventListener('click', () => {
+    bottomLine.innerText = bottomLine.innerText.substr(0, bottomLine.innerText.length-1);
+});
+
+
+/** funzioni = */
+/*
+btnEqual.addEventListener('click', () => {
+
+});
+*/
