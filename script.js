@@ -29,12 +29,20 @@ let operatorSelected = false;
 
 /** stampa a schermo */
 const values = document.querySelectorAll(".value");
+let input = "";
 values.forEach((button) => {
     button.addEventListener('click', (e) => {
-        //console.log("button: " + operatorSelected);
+        input = e.target.innerText;
+        if(input == "."){
+            for(let i = 0; i < bottomLine.innerText.length; i++){
+                if(bottomLine.innerText[i] == "."){
+                    input = "";
+                }
+            }
+        }
         if(bottomLine.innerText == 0 || operatorSelected == true){ bottomLine.innerText = ""; }
         if(bottomLine.innerText == "."){ bottomLine.innerText = "0.";}
-        bottomLine.innerText = bottomLine.innerText + e.target.innerText;
+        bottomLine.innerText = bottomLine.innerText + input;
         operatorSelected = false;
     });
 });
@@ -45,7 +53,6 @@ let valori = [];
 const operators = document.querySelectorAll(".operator");
 operators.forEach((button) => {
     button.addEventListener('click', (e) => {
-        //console.log("operetor: " + operatorSelected);
         operatorSelected = true;
         valori.push(bottomLine.innerText);
         valori.push(e.target.innerText);
@@ -66,6 +73,7 @@ btnClear.addEventListener('click', () => {
     bottomLine.innerText = "";
     topLine.innerText = "";
     valori = [];
+    stringTopLine = "";
 });
 
 
@@ -75,9 +83,68 @@ btnDelete.addEventListener('click', () => {
 });
 
 
-/** funzioni = */
-/*
-btnEqual.addEventListener('click', () => {
+/** EQUAL */
+let result; //tmp risultato
+let c = false;  //se ci sono x e / nell'array
+let operations = function(array){
+    valori.push(bottomLine.innerText);
+    valori.forEach((x) => {
+        stringTopLine = stringTopLine + " " + x;
+    });
+    topLine.innerText = stringTopLine;
+    while(array.length > 1){ //continuo fino a quando l'array non mostra solo il risultato 
+        console.log("while: " + array);
+        c = false;
+        //controllo se ci sono x e / e setto c
+        array.forEach((v) => { if(v == "x" || v == "%"){c = true;} });
+        //se ci sono x e / allora eseguo quelli
+        if(c == true){
+            console.log("xe/ s: " + array);
+            //trovo la posizione dell'operatore e lo svolgo
+            for(let i = 0; i < array.length; i++){
+                //moltiplicazione
+                if(array[i] == "x"){
+                    result = array[i-1] * array[i+1];
+                    array[i-1] = result;
+                    array.splice(i, 2);
+                    i--;
+                }
+                //divisione
+                if(array[i] == "%"){
+                    result = array[i-1] / array[i+1];
+                    array[i-1] = result;
+                    array.splice(i, 2);
+                    i--;
+                }
+            }
+            console.log("xe/  f: " + array);
+        }
+        if(c == false){
+            console.log("+e-  s: " + array);
+            //trovo la posizione dell'operatore e lo svolgo
+            for(let i = 0; i < array.length; i++){
+                //addizione
+                if(array[i] == "+"){
+                    result = parseFloat(array[i-1]) + parseFloat(array[i+1]);
+                    array[i-1] = result;
+                    array.splice(i, 2);
+                    i--;
+                    console.log("+: " + array);
+                }
+                //sottrazione
+                if(array[i] == "-"){
+                    result = array[i-1] - array[i+1];
+                    array[i-1] = result;
+                    array.splice(i, 2);
+                    i--;
+                    console.log("-: " + array);
+                }
+            }
+            console.log("+e-  f: " + array);
+        }
+    }
+    console.log(array);
+    bottomLine.innerText = array[0].toFixed(2);
+}
 
-});
-*/
+btnEqual.addEventListener('click', () => {operations(valori);});
